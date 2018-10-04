@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>贪吃蛇</title>
+	<meta charset="utf-8" />
+	<script src="jquery-2.1.0.js" type="text/javascript" charset="utf-8"></script>
+	<style>
+	.square {
+		width: 30px;
+		height: 30px;
+	}
+	.border {
+		background: grey;
+	}
+	.snake {
+		background: black;
+	}
+	 .in {
+        background: #0f0;
+    }
+    .food {
+        background: red;
+    }
+    #btn{
+    	float: left;
+    	position: absolute;
+    	left: 100px;
+    	top: 100px;
+    }
+	</style>
+</head>
+<body>
+	<table border="0" cellspacing="0" cellpadding="0" align="center">
+		<tbody id="tbody">
+			
+		</tbody>
+	</table>
+	<button id="btn" onclick="location.reload();">START</button>
+	<script type="text/javascript">
+		//初始化游戏背景
+		initTable(20,20);
+		var foodArr = randomFood();//把蛇的食物放在一个数组里
+		var timer;
+		var snake = new Object();
+		snake.arr = [[1,1]];
+		snake.direction = "right";
+		//初始化一条蛇
+		for (var i = 0; i < snake.arr.length; i++) {
+			snake.arr[i]
+			$("#tbody").children().eq(snake.arr[i][0]).children().eq(snake.arr[i][1]).addClass("snake");
+		}
+ 
+		 
+		timer = setInterval(function() {
+			//分四个方向 每个方向三种情况
+			//向右移动时
+			if(snake.direction == "right") {
+				if($("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).next().hasClass("border") || $("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).next().hasClass("snake")) {
+					window.clearInterval(timer);
+					alert("GOME  OVER!!!"); //如果碰到边界或者自己的身体 游戏结束
+				} else if ($("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).next().hasClass("food")) {
+					snake.arr.unshift(foodArr);
+					console.log(snake.arr);
+ 					$("#tbody").children().eq(foodArr[0]).children().eq(foodArr[1]).removeClass("food").addClass("snake");
+ 					foodArr = randomFood();  //通过判断蛇身体是否有食物的样式
+ 					
+				} 
+					else {
+					var arr = [snake.arr[0][0], snake.arr[0][1] + 1];
+					snake.arr.unshift(arr);
+					$("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).addClass("snake");
+					$("#tbody").children().eq(snake.arr[snake.arr.length - 1][0]).children().eq(snake.arr[snake.arr.length - 1][1]).removeClass("snake");
+					snake.arr.pop();  //在没有其他情况下 按着这个方向一直移动
+				}	
+				//向左移动时
+			} else if(snake.direction == "left") {
+				if($("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).prev().hasClass("border") || $("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).prev().hasClass("snake")) {
+					window.clearInterval(timer);
+					alert("GOME  OVER!!!");
+				} else if ($("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).prev().hasClass("food")) {
+					
+					snake.arr.unshift(foodArr);
+					console.log(snake.arr);
+ 					$("#tbody").children().eq(foodArr[0]).children().eq(foodArr[1]).removeClass("food").addClass("snake");
+ 					foodArr = randomFood();
+ 					
+				}
+				else {
+				var arr = [snake.arr[0][0], snake.arr[0][1] - 1];
+				snake.arr.unshift(arr);
+				$("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).addClass("snake");
+				$("#tbody").children().eq(snake.arr[snake.arr.length - 1][0]).children().eq(snake.arr[snake.arr.length - 1][1]).removeClass("snake");
+				snake.arr.pop();
+				}
+				//向上移动时
+			} else if(snake.direction == "top") {
+				if($("#tbody").children().eq(snake.arr[0][0]).prev().children().eq(snake.arr[0][1]).hasClass("border") || $("#tbody").children().eq(snake.arr[0][0]).prev().children().eq(snake.arr[0][1]).hasClass("snake")) {
+					window.clearInterval(timer);
+					alert("GOME  OVER!!!");
+				} else if ($("#tbody").children().eq(snake.arr[0][0]).prev().children().eq(snake.arr[0][1]).hasClass("food")) {
+					
+					snake.arr.unshift(foodArr);
+					console.log(snake.arr);
+ 					$("#tbody").children().eq(foodArr[0]).children().eq(foodArr[1]).removeClass("food").addClass("snake");
+ 					foodArr = randomFood();
+ 					
+				} 
+				else {
+				var arr = [snake.arr[0][0] - 1, snake.arr[0][1]];
+				snake.arr.unshift(arr);
+				$("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).addClass("snake");
+				$("#tbody").children().eq(snake.arr[snake.arr.length - 1][0]).children().eq(snake.arr[snake.arr.length - 1][1]).removeClass("snake");
+				snake.arr.pop();
+				}
+				//向下移动时
+			} else if(snake.direction == "bottom") {
+				if($("#tbody").children().eq(snake.arr[0][0]).next().children().eq(snake.arr[0][1]).hasClass("border") || $("#tbody").children().eq(snake.arr[0][0]).next().children().eq(snake.arr[0][1]).hasClass("snake")) {
+					window.clearInterval(timer);
+					alert("GOME  OVER!!!");
+				} else if ($("#tbody").children().eq(snake.arr[0][0]).next().children().eq(snake.arr[0][1]).hasClass("food")) {
+					snake.arr.unshift(foodArr);
+					console.log(snake.arr);
+ 					$("#tbody").children().eq(foodArr[0]).children().eq(foodArr[1]).removeClass("food").addClass("snake");
+ 					foodArr = randomFood();
+ 					
+				} 
+				else {	
+				var arr = [snake.arr[0][0] + 1, snake.arr[0][1]];
+				snake.arr.unshift(arr);
+				$("#tbody").children().eq(snake.arr[0][0]).children().eq(snake.arr[0][1]).addClass("snake");
+				$("#tbody").children().eq(snake.arr[snake.arr.length - 1][0]).children().eq(snake.arr[snake.arr.length - 1][1]).removeClass("snake");
+				snake.arr.pop();
+				}
+			}
+			
+		},200);
+	
+			
+		
+		//通过键盘上下左右来下达指令
+		$(document).on("keydown",function() {
+			if (event.keyCode == 37) {
+				if (snake.direction == "left" || snake.direction == "right") {
+					return;
+				}else {
+					snake.direction = "left";
+				}
+			}else if (event.keyCode == 38) {
+				if (snake.direction == "top" || snake.direction == "bottom") {
+					return;
+				}else {
+					snake.direction = "top";
+				}
+				
+			}else if (event.keyCode == 39) {
+				if (snake.direction == "left" || snake.direction == "right") {
+					return;
+				}else {
+				snake.direction = "right";
+				}
+			}else if (event.keyCode == 40) {
+				if (snake.direction == "top" || snake.direction == "buttom") {
+					return;
+				}else {
+					snake.direction = "bottom";
+				}
+				
+			}
+		})
+		//用随机数来生成食物 要求在边框内 通过while循环来排除食物出现在蛇身里
+		function randomFood() {
+			var x = Math.floor(Math.random()*20 + 1);
+			var y = Math.floor(Math.random()*20 + 1);
+			while(true) {
+				if ($("#tbody").children().eq(x).children().eq(y).hasClass("snake")) {
+					var x = Math.floor(Math.random()*20 + 1);
+					var y = Math.floor(Math.random()*20 + 1);
+				} else {
+					$("#tbody").children().eq(x).children().eq(y).addClass("food");
+					var arr = [];
+					arr.push(x);
+					arr.push(y);
+					return arr;
+				}
+			
+			}
+			
+		
+		}
+		
+		//初始化背景  注意边框怎么加！！！
+		function initTable(width,height) {
+			for (var i = 1; i <= height + 2; i++) {
+			var tr = $("<tr></tr>");
+			for (var j = 1; j <= width + 2; j++) {
+				if (i == 1 || i == height + 2) {
+					tr.append("<td class = 'border square'></td>");
+				} else {
+					if (j == 1 || j == width + 2) {
+						tr.append("<td class = 'border square'></td>")
+					} else{
+						tr.append("<td class ='square '></td>")
+					}
+				}
+				$("#tbody").append(tr);
+			}
+			
+			}
+		}
+ 
+		
+	</script>
+</body>
+</html>
